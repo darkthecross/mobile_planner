@@ -12,22 +12,17 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
-# Config OGRE path
-set(CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
+#####################################################################################
 
-# find dependencies
-# specify which version and components you need
-find_package(OGRE 1.12 REQUIRED COMPONENTS Bites RTShaderSystem)
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-include_directories(${OGRE_INCLUDE_DIRS})
-link_directories(${OGRE_LIBRARY_DIRS})
- 
-# copy resource.cfg next to our binaries where OGRE looks for it
-file(COPY ${OGRE_CONFIG_DIR}/resources.cfg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
- 
-# add_library(kinematics_trajectory src/kinematics_trajectory.cc src/kinematics_trajectory.h)
-add_library(visualizer src/visualizer.cc src/visualizer.h)
-target_link_libraries(visualizer OgreBites OgreRTShaderSystem)
+# Add protos.
+ADD_SUBDIRECTORY(src/proto)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(kinematics_trajectory_lib src/kinematics_trajectory.cc src/kinematics_trajectory.h)
+target_link_libraries(kinematics_trajectory_lib ${PROTO_SRCS} ${PROTO_HDRS})
 
 add_executable(kinematics_trajectory_demo src/kinematics_trajectory_demo.cc)
-target_link_libraries(kinematics_trajectory_demo visualizer OgreBites OgreRTShaderSystem)
+target_link_libraries(kinematics_trajectory_demo kinematics_trajectory_lib ${OpenCV_LIBS})

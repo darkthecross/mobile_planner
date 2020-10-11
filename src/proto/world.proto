@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package mobile_planner;
+
+message MobileRobot {
+  message RobotState {
+      required double x = 1;
+      required double y = 2;
+      required double theta = 3;
+  }
+
+  required RobotState cur_state = 1;
+  repeated RobotState planned_trajectory = 2;
+}
+
+message world {
+  repeated MobileRobot robots = 1;
+}

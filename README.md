@@ -4,12 +4,17 @@ This is an experimental repository for exploring optimization algorithms.
 
 Information about how to setup the dev env.
 
-## Intall Ogre
-Follow instructions in [Build Guide](https://ogrecave.github.io/ogre/api/latest/building-ogre.html).
-Trouble shooting tips: toggle off OGRE_BUILD_PLUGIN_ASSIMP if you encountered the following error: 
+## Install ProtoBuf
 ```
-make[2]: *** No rule to make target 'Dependencies/lib/IrrXML.lib', needed by 'lib/Codec_Assimp.so.1.12.10'.  Stop.
-
+sudo apt-get install autoconf automake libtool curl make g++ unzip -y
+git clone https://github.com/google/protobuf.git
+cd protobuf
+git submodule update --init --recursive
+./autogen.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 ```
 
 # Math
