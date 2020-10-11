@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(lqr_optimizer)
+project(mobile_planner)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -12,17 +12,22 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
-# find dependencies
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+# Config OGRE path
+set(CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
 
-add_library(kinematics_trajectory src/kinematics_trajectory.cc src/kinematics_trajectory.h)
+# find dependencies
+# specify which version and components you need
+find_package(OGRE 1.12 REQUIRED COMPONENTS Bites RTShaderSystem)
+
+include_directories(${OGRE_INCLUDE_DIRS})
+link_directories(${OGRE_LIBRARY_DIRS})
+ 
+# copy resource.cfg next to our binaries where OGRE looks for it
+file(COPY ${OGRE_CONFIG_DIR}/resources.cfg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+ 
+# add_library(kinematics_trajectory src/kinematics_trajectory.cc src/kinematics_trajectory.h)
+add_library(visualizer src/visualizer.cc src/visualizer.h)
+target_link_libraries(visualizer OgreBites OgreRTShaderSystem)
 
 add_executable(kinematics_trajectory_demo src/kinematics_trajectory_demo.cc)
-ament_target_dependencies(kinematics_trajectory_demo rclcpp std_msgs)
-
-install(TARGETS
-  kinematics_trajectory
-  kinematics_trajectory_demo
-  DESTINATION lib/${PROJECT_NAME})
+target_link_libraries(kinematics_trajectory_demo visualizer OgreBites OgreRTShaderSystem)

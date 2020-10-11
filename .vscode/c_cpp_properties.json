@@ -6,10 +6,10 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/usr/include/**"
+                "/usr/include/**",
+                "/usr/local/include/**"
             ],
             "name": "ROS",
-            "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu18",
             "cppStandard": "gnu++14"
