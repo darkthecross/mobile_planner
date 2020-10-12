@@ -22,7 +22,7 @@ ADD_SUBDIRECTORY(src/proto)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(kinematics_trajectory_lib src/kinematics_trajectory.cc src/kinematics_trajectory.h)
-target_link_libraries(kinematics_trajectory_lib ${PROTO_SRCS} ${PROTO_HDRS})
+target_link_libraries(kinematics_trajectory_lib proto ${PROTOBUF_LIBRARY})
 
 add_executable(kinematics_trajectory_demo src/kinematics_trajectory_demo.cc)
-target_link_libraries(kinematics_trajectory_demo kinematics_trajectory_lib ${OpenCV_LIBS})
+target_link_libraries(kinematics_trajectory_demo kinematics_trajectory_lib ${OpenCV_LIBS} )

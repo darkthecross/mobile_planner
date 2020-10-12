@@ -9,7 +9,7 @@
                 "/usr/include/**",
                 "/usr/local/include/**",
                 "/usr/include/opencv4/**",
-                "build/src/proto/**"
+                "build/**"
             ],
             "name": "ROS",
             "compilerPath": "/usr/bin/gcc",

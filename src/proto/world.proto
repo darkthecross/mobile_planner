@@ -6,7 +6,8 @@ message MobileRobot {
   message RobotState {
       required double x = 1;
       required double y = 2;
-      required double theta = 3;
+      required double phi = 3;
+      required double v = 5;
   }
 
   required RobotState cur_state = 1;
