@@ -1,5 +1,9 @@
+#ifndef KINEMATICS_H
+#define KINEMATICS_H
+
 #include <vector>
 
+#include "kinematic_params.h"
 #include "src/proto/world.pb.h"
 
 namespace kinematics {
@@ -22,6 +26,15 @@ struct State {
     s.set_v(v);
     return s;
   }
+  static State FromProto(
+      const mobile_planner::MobileRobot_RobotState& state_proto) {
+    State s;
+    s.x = state_proto.x();
+    s.y = state_proto.y();
+    s.v = state_proto.v();
+    s.phi = state_proto.phi();
+    return s;
+  }
   double x;
   double y;
   double phi;
@@ -39,7 +52,9 @@ struct RobotParams {
   RobotParams(double lr, double lf) : l_r(lr), l_f(lf) {}
   double l_r;
   double l_f;
-  static const RobotParams Defaults() { return RobotParams(1.0, 1.0); }
+  static const RobotParams Defaults() {
+    return RobotParams(model::kLf, model::kLr);
+  }
 };
 
 class Trajectory {
@@ -78,3 +93,5 @@ class Trajectory {
 };
 
 }  // namespace kinematics
+
+#endif

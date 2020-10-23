@@ -21,8 +21,11 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 ADD_SUBDIRECTORY(src/proto)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-add_library(kinematics_trajectory_lib src/kinematics_trajectory.cc src/kinematics_trajectory.h)
-target_link_libraries(kinematics_trajectory_lib proto ${PROTOBUF_LIBRARY})
+add_library(util_lib src/util.cc src/util.h)
+target_link_libraries(util_lib proto ${PROTOBUF_LIBRARY} ${OpenCV_LIBS})
+
+add_library(kinematics_lib src/kinematics.cc src/kinematics.h)
+target_link_libraries(kinematics_lib proto ${PROTOBUF_LIBRARY} util_lib)
 
 add_executable(kinematics_trajectory_demo src/kinematics_trajectory_demo.cc)
-target_link_libraries(kinematics_trajectory_demo kinematics_trajectory_lib ${OpenCV_LIBS} )
+target_link_libraries(kinematics_trajectory_demo kinematics_lib ${OpenCV_LIBS} )

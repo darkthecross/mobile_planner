@@ -1,4 +1,4 @@
-#include "kinematics_trajectory.h"
+#include "kinematics.h"
 
 #include <cmath>
 
