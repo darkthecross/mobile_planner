@@ -1,8 +1,10 @@
 This is an experimental repository for exploring optimization algorithms.
 
+The main algorithm is iterative LQR.
+
 # Setup
 
-Information about how to setup the dev env.
+Information about how to setup the dev env (on ubuntu).
 
 ## Install ProtoBuf
 ```
@@ -17,8 +19,13 @@ sudo make install
 sudo ldconfig
 ```
 
-## OpenCV
-This was used to visualize the trajectory in kinematics_trajectory_demo.cc
+## Install OpenCV
+
+OpenCV was used in this project as visualization tools.
+```
+sudo apt update
+sudo apt install libopencv-dev python3-opencv
+```
 
 # Math
 Kinematics model: [Bycicle model](https://borrelli.me.berkeley.edu/pdfpub/IV_KinematicMPC_jason.pdf).
