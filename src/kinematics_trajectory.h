@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 
 #include "src/proto/world.pb.h"
@@ -14,13 +15,17 @@ struct State {
     phi = s.phi();
     v = s.v();
   }
-  mobile_planner::MobileRobot_RobotState ToProto() {
+  const mobile_planner::MobileRobot_RobotState ToProto() const {
     mobile_planner::MobileRobot_RobotState s;
     s.set_x(x);
     s.set_y(y);
     s.set_phi(phi);
     s.set_v(v);
     return s;
+  }
+  const std::string DebugString() const {
+    return "(x: " + std::to_string(x) + ", y: " + std::to_string(y) +
+           ", phi: " + std::to_string(phi) + ", v: " + std::to_string(v) + ")";
   }
   double x;
   double y;
@@ -48,9 +53,13 @@ class Trajectory {
                       const RobotParams& robot_params = RobotParams::Defaults())
       : timestep_(timestep), robot_params_(robot_params) {}
 
-  const std::vector<State> x() { return x_; }
+  const std::vector<State> x() const { return x_; }
 
-  const std::vector<Control> u() { return u_; }
+  const std::vector<Control> u() const { return u_; }
+
+  const double dt() { return timestep_; }
+
+  const RobotParams& robot_params() { return robot_params_; }
 
   void Reset() {
     x_.clear();

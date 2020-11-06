@@ -1,8 +1,8 @@
 #include <stdio.h>
 
+#include <iostream>
 #include <opencv2/opencv.hpp>
 #include <random>
-#include <iostream>
 
 #include "kinematics_trajectory.h"
 
@@ -21,7 +21,8 @@ void WorldCoordToImgCoord(double world_x, double world_y, int* img_x,
   *img_x = static_cast<int>(world_x * 200 + ORIGIN_W);
   *img_x = std::min(std::max(*img_x, 0), IMG_W - 1);
 
-  // std::cout << "world: (" << world_x << ", " << world_y << "), img: (" << *img_x << ", " << *img_y << ")" << std::endl;
+  // std::cout << "world: (" << world_x << ", " << world_y << "), img: (" <<
+  // *img_x << ", " << *img_y << ")" << std::endl;
 }
 
 void StateEllipse(Mat img, int img_x, int img_y) {
@@ -53,6 +54,10 @@ int main(int argc, char** argv) {
     random_control.a = a_distribution(generator);
     random_control.delta_f = delta_f_distribution(generator);
     traj.AppendControl(random_control);
+  }
+
+  for (auto& s : traj.x()) {
+    std::cout << s.DebugString() << std::endl;
   }
 
   Mat image(IMG_H, IMG_W, CV_8UC3, Scalar(0, 0, 0));

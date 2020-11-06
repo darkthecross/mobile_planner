@@ -9,11 +9,12 @@
                 "/usr/include/**",
                 "/usr/local/include/**",
                 "/usr/include/opencv4/**",
-                "build/**"
+                "build/**",
+                "/usr/include/eigen3"
             ],
             "name": "ROS",
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "gnu18",
+            "cStandard": "c11",
             "cppStandard": "gnu++14"
         }
     ],

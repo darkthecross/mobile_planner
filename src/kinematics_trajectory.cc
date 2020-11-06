@@ -7,8 +7,8 @@ namespace kinematics {
 void Trajectory::StepControl(const State& cur_state, const Control& control,
                              const RobotParams& robot_params, double timestep,
                              State* stepped_state) {
-  if(stepped_state == nullptr) {
-      return;
+  if (stepped_state == nullptr) {
+    return;
   }
   const double lf = robot_params.l_f;
   const double lr = robot_params.l_r;
@@ -24,22 +24,24 @@ void Trajectory::StepControl(const State& cur_state, const Control& control,
 
   const double phi_mid = (cur_state.phi + stepped_state->phi) / 2.0;
 
+  const double v_avg = (cur_state.v + stepped_state->v) / 2.0;
+
   const double dx0ov = std::cos(cur_state.phi + beta);
   const double dx1ov = std::cos(phi_mid + beta);
   const double dx2ov = std::cos(stepped_state->phi + beta);
   stepped_state->x =
-      cur_state.x + 1.0 / 6 * (dx0ov + dx1ov * 4 + dx2ov) * timestep;
+      cur_state.x + 1.0 / 6 * (dx0ov + dx1ov * 4 + dx2ov) * timestep * v_avg;
 
   const double dy0ov = std::sin(cur_state.phi + beta);
   const double dy1ov = std::sin(phi_mid + beta);
   const double dy2ov = std::sin(stepped_state->phi + beta);
   stepped_state->y =
-      cur_state.y + 1.0 / 6 * (dy0ov + dy1ov * 4 + dy2ov) * timestep;
+      cur_state.y + 1.0 / 6 * (dy0ov + dy1ov * 4 + dy2ov) * timestep * v_avg;
 }
 
 void Trajectory::AppendControl(const Control& control) {
-  if(x_.empty()) {
-      return;
+  if (x_.empty()) {
+    return;
   }
   u_.push_back(control);
   State next_state;
