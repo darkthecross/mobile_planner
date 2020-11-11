@@ -32,8 +32,6 @@ sudo apt install libopencv-dev python3-opencv
 ![img1](math1.png)
 ![img2](math2.png)
 
-Only the trajectory following algorithm was implemented, and I lost interest on this. 
-
 The iterative LQR algorithm should be most interesting, since it optimizes any cost given a initial trajectory. 
 But Pratically applying this algorithm will require some good search output, which serves as the initialization.
 
