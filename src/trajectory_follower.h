@@ -1,9 +1,9 @@
-#ifndef TRAJECTORY_SOLVER_H
-#define TRAJECTORY_SOLVER_H
+#ifndef TRAJECTORY_FOLLOWER_H
+#define TRAJECTORY_FOLLOWER_H
 
 #include <Eigen/Dense>
 
-#include "kinematics_trajectory.h"
+#include "kinematics.h"
 
 namespace kinematics {
 
@@ -14,13 +14,13 @@ class TrajectoryFollower {
         timestep_(initial_traj.dt()),
         robot_params_(initial_traj.robot_params()) {}
 
+  Trajectory Optimize(Eigen::Matrix4d Q, Eigen::Matrix2d R);
+
+ private:
   Eigen::Matrix4d dfdx(const State& x, const Control& u);
 
   Eigen::MatrixXd dfdu(const State& x, const Control& u);
 
-  Trajectory Optimize(Eigen::Matrix4d Q, Eigen::Matrix2d R);
-
- private:
   Trajectory initial_trajectory_;
   double timestep_;
   RobotParams robot_params_;

@@ -1,4 +1,4 @@
-#include "trajectory_solver.h"
+#include "trajectory_follower.h"
 
 namespace kinematics {
 
@@ -34,8 +34,9 @@ Trajectory TrajectoryFollower::Optimize(Eigen::Matrix4d Q, Eigen::Matrix2d R) {
   const auto& initial_controls = initial_trajectory_.u();
   Eigen::Matrix4d P = Q;
   Eigen::MatrixXd K(2, 4);
-  std::vector<Control> optimized_controls;
-  optimized_controls.resize(initial_controls.size());
+  std::vector<Eigen::MatrixXd> Ks;
+  Ks.resize(initial_controls.size());
+  // Backward pass
   for (int i = initial_states.size() - 2; i >= 0; i--) {
     const auto A_t = dfdx(initial_states[i], initial_controls[i]);
     const auto B_t = dfdu(initial_states[i], initial_controls[i]);
@@ -43,17 +44,23 @@ Trajectory TrajectoryFollower::Optimize(Eigen::Matrix4d Q, Eigen::Matrix2d R) {
     K = -RpBPB.inverse() * B_t.transpose() * P * A_t;
     Eigen::MatrixXd ApBK = A_t + B_t * K;
     P = Q + K.transpose() * R * K + ApBK.transpose() * P * ApBK;
-    Eigen::Vector4d x_t;
-    x_t << initial_states[i].x, initial_states[i].y, initial_states[i].v,
-        initial_states[i].phi;
-    Eigen::Vector2d u_t_opt = K * x_t;
-    optimized_controls[i] = Control(u_t_opt(0) + initial_controls[i].a,
-                                    u_t_opt(1) + initial_controls[i].delta_f);
+    Ks[i] = K;
   }
+  // Forward pass
   Trajectory optimized_trajectory(timestep_, robot_params_);
   optimized_trajectory.SetInitialState(initial_states.at(0));
-  for (const auto& ctrl : optimized_controls) {
-    optimized_trajectory.AppendControl(ctrl);
+  for (int i = 0; i < initial_controls.size(); i++) {
+    Eigen::Vector4d x_t_star;
+    x_t_star << initial_states[i].x, initial_states[i].y, initial_states[i].v,
+        initial_states[i].phi;
+    const auto& x_t_state = optimized_trajectory.x().back();
+    Eigen::Vector4d x_t;
+    x_t << x_t_state.x, x_t_state.y, x_t_state.v, x_t_state.phi;
+    const auto& Ki = Ks[i];
+    Eigen::Vector2d u_t_opt = Ki * (x_t - x_t_star);
+    Control ctrl_t(u_t_opt(0) + initial_controls[i].a,
+                   u_t_opt(1) + initial_controls[i].delta_f);
+    optimized_trajectory.AppendControl(ctrl_t);
   }
   return optimized_trajectory;
 }

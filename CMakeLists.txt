@@ -28,12 +28,21 @@ add_library(kinematics_lib src/kinematics.cc src/kinematics.h)
 target_link_libraries(kinematics_lib proto ${PROTOBUF_LIBRARY} util_lib)
 
 add_executable(kinematics_trajectory_demo src/kinematics_trajectory_demo.cc)
-target_link_libraries(kinematics_trajectory_demo kinematics_trajectory_lib ${OpenCV_LIBS} )
+target_link_libraries(kinematics_trajectory_demo kinematics_lib ${OpenCV_LIBS} )
 
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIRS})
-add_library(trajectory_solver_lib src/trajectory_solver.cc src/trajectory_solver.h)
-target_link_libraries(trajectory_solver_lib kinematics_trajectory_lib)
+add_library(trajectory_follower_lib src/trajectory_follower.cc src/trajectory_follower.h)
+target_link_libraries(trajectory_follower_lib kinematics_lib)
 
-add_executable(trajectory_solver_demo src/trajectory_solver_demo.cc)
-target_link_libraries(trajectory_solver_demo trajectory_solver_lib proto ${PROTOBUF_LIBRARY})
+add_executable(trajectory_follower_demo src/trajectory_follower_demo.cc)
+target_link_libraries(trajectory_follower_demo trajectory_follower_lib proto ${PROTOBUF_LIBRARY})
+
+add_library(trajectory_potentials_lib src/trajectory_potentials.cc src/trajectory_potentials.h)
+target_link_libraries(trajectory_potentials_lib kinematics_lib)
+
+add_executable(object_repeller_demo src/object_repeller_demo.cc)
+target_link_libraries(object_repeller_demo trajectory_potentials_lib)
+
+add_executable(trajectory_potentials_demo src/trajectory_potentials_demo.cc)
+target_link_libraries(trajectory_potentials_demo trajectory_potentials_lib ${OpenCV_LIBS})

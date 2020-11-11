@@ -72,9 +72,9 @@ class Trajectory {
 
   const std::vector<Control> u() const { return u_; }
 
-  const double dt() { return timestep_; }
+  const double dt() const { return timestep_; }
 
-  const RobotParams& robot_params() { return robot_params_; }
+  const RobotParams& robot_params() const { return robot_params_; }
 
   void Reset() {
     x_.clear();

@@ -31,22 +31,7 @@ int main(int argc, char** argv) {
 
   Mat image(IMG_H, IMG_W, CV_8UC3, Scalar(0, 0, 0));
 
-  const auto& states = traj.x();
-  int prev_x, prev_y;
-  for (auto i = 0; i < states.size(); i++) {
-    int xx, yy;
-    double theta;
-    const auto& s = states.at(i);
-    // std::cout << "phi(" << i << "): " << s.phi;
-    util::WorldCoordToImgCoord(s.x, s.y, &xx, &yy);
-    util::WorldThetaToImgTheta(s.phi, &theta);
-    util::StateEllipse(image, xx, yy, theta);
-    if (i > 0) {
-      util::StateLine(image, Point(prev_x, prev_y), Point(xx, yy));
-    }
-    prev_x = xx;
-    prev_y = yy;
-  }
+  util::DrawTrajectory(image, traj);
 
   namedWindow("Display Image", WINDOW_AUTOSIZE);
   imshow("Display Image", image);

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random>
 
-#include "trajectory_solver.h"
+#include "trajectory_follower.h"
 
 int main(int argc, char** argv) {
   // Construct a trajectory with random controls.
