@@ -62,5 +62,7 @@ int main(int argc, char** argv) {
     waitKey(0);
   }
 
+  imwrite("opt_trajs.png", image);
+
   return 0;
 }
