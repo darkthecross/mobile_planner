@@ -37,7 +37,7 @@ But Pratically applying this algorithm will require some good search output, whi
 
 Reference: 
 
-*  Kinematics model: [Bycicle model](https://borrelli.me.berkeley.edu/pdfpub/IV_KinematicMPC_jason.pdf).
+*  Kinematics model: [Bycicle model](https://borrelli.me.berkeley.edu/pdfpub/IV_KinematicMPC_jason.pdf). Original link was broken, but should be easy to find. The author is Jason Kong.
 *  LQR: [pabbeel's lecture](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/LQR.pdf)
 
 # Results
