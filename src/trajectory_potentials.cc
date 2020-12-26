@@ -1,7 +1,5 @@
 #include "trajectory_potentials.h"
 
-#include <iostream>
-
 namespace kinematics {
 
 namespace {
@@ -41,8 +39,6 @@ Eigen::MatrixXd PSDQ(Eigen::MatrixXd Q0, Eigen::MatrixXd Qp) {
     lltOfA = Eigen::LLT<Eigen::MatrixXd>(A);
     loop_count++;
   }
-  std::cout << "PSDQ:" << std::endl;
-  std::cout << A << std::endl;
   return A;
 }
 
@@ -138,7 +134,6 @@ Trajectory TrajectoryOptimizer::RunOptIteration(const kinematics::Trajectory& tr
   // Backward pass
   const auto& s_back = initial_states.back();
 
-  std::cout << "state control gains." << std::endl;
   // Constant state / control gains.
   Eigen::MatrixXd Q0 = Eigen::MatrixXd::Zero(5, 5);
   Q0.diagonal().block<4,1>(0,0) = state_gains_;
@@ -147,7 +142,6 @@ Trajectory TrajectoryOptimizer::RunOptIteration(const kinematics::Trajectory& tr
   Eigen::Matrix2d R0;
   R0.diagonal() = control_gains_;
 
-  std::cout << "Q for z_last." << std::endl;
   // Construct Q for z_{last}
   Eigen::MatrixXd Qp_last = QFromPosStates(object_repeller_potentials_, s_back);
   Eigen::MatrixXd psdQ_last = PSDQ(Q0, Qp_last);
@@ -156,7 +150,6 @@ Trajectory TrajectoryOptimizer::RunOptIteration(const kinematics::Trajectory& tr
   std::vector<Eigen::MatrixXd> Ks;
   Ks.resize(initial_controls.size());
 
-  std::cout << "backfill." << std::endl;
   // Backfill pass.
   for (int i = initial_states.size() - 2; i >= 0; i--) {
     const auto dfdx_mat = dfdx(initial_states[i], initial_controls[i]);
@@ -177,23 +170,17 @@ Trajectory TrajectoryOptimizer::RunOptIteration(const kinematics::Trajectory& tr
     Ks[i] = K;
   }
 
-  std::cout << "forward pass." << std::endl;
   // Forward pass
   Trajectory optimized_trajectory(timestep_, robot_params_);
   optimized_trajectory.SetInitialState(initial_states.at(0));
   for (int i = 0; i < initial_controls.size(); i++) {
-    std::cout << "forward pass: step " << i << std::endl;
     const auto& x_t_state = optimized_trajectory.x().back();
     Eigen::VectorXd z_t(5);
     z_t << x_t_state.x - initial_states[i].x, x_t_state.y - initial_states[i].y, x_t_state.v - initial_states[i].v,
         x_t_state.phi - initial_states[i].phi, 1;
-    std::cout << "Ks[i]: \n" << Ks[i] << std::endl;
     Eigen::Vector2d u_t_opt = Ks[i] * z_t;
-    std::cout << "u_t_opt: \n" << u_t_opt << std::endl;
     Control ctrl_t(u_t_opt(0) + initial_controls[i].a,
                    u_t_opt(1) + initial_controls[i].delta_f);
-    std::cout << "i_control: (" << initial_controls[i].a << ", " << initial_controls[i].delta_f << ")" << std::endl;
-    std::cout << "o_control: (" << ctrl_t.a << ", " << ctrl_t.delta_f << ")" << std::endl;
     optimized_trajectory.AppendControl(ctrl_t);
   }
   return optimized_trajectory;

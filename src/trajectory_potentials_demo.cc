@@ -23,18 +23,7 @@ int main(int argc, char** argv) {
     traj.AppendControl(kinematics::Control());
   }
 
-  std::cout << "Initial traj: " << std::endl;
-  for (auto& s : traj.x()) {
-    std::cout << s.DebugString() << std::endl;
-  }
-
   Mat image(IMG_H, IMG_W, CV_8UC3, Scalar(0, 0, 0));
-
-  util::DrawTrajectory(image, traj);
-
-  namedWindow("Display Image", WINDOW_AUTOSIZE);
-  imshow("Display Image", image);
-  waitKey(0);
 
   // Set up the optimizer.
   kinematics::TrajectoryOptimizer optimizer(traj);
@@ -55,14 +44,20 @@ int main(int argc, char** argv) {
 
   auto optimized_traj = traj;
 
+  cv::Mat img_cp = image.clone();
+  util::DrawTrajectory(img_cp, traj);
+  // imwrite("init_traj.png", image);
+
   for(auto i = 0; i<25; i++) {
+    img_cp = image.clone();
     optimized_traj = optimizer.RunOptIteration(optimized_traj);
-    util::DrawTrajectory(image, optimized_traj);
-    imshow("Display Image", image);
+    util::DrawTrajectory(img_cp, optimized_traj);
+    imshow("Display Image", img_cp);
+    // imwrite("opt_traj_" + std::to_string(i) + ".png", img_cp);
     waitKey(0);
   }
 
-  imwrite("opt_trajs.png", image);
+  // imwrite("opt_traj.png", img_cp);
 
   return 0;
 }

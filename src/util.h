@@ -9,12 +9,12 @@ namespace util {
 
 using namespace cv;
 
-#define IMG_W 1600
-#define IMG_H 1200
-#define ORIGIN_W 400
-#define ORIGIN_H 600
+#define IMG_W 480
+#define IMG_H 480
+#define ORIGIN_W 20
+#define ORIGIN_H 240
 
-#define WORLD_SCALE 700
+#define WORLD_SCALE 300
 
 // img_x -> col, img_y -> row
 void WorldCoordToImgCoord(double world_x, double world_y, int* img_x,
